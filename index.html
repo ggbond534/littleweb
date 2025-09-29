@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>梵高星空</title>
+  <style>
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: 'Poppins', sans-serif;
+			height: 100vh;
+			overflow: hidden;
+			/* 核心：背景图路径用“同文件夹文件名”，这里示例为 bg.jpg，需替换成你的照片名 */
+			background: url("噜噜.jpg") center center no-repeat;
+			background-size: cover; /* 照片自适应铺满屏幕 */
+			background-attachment: fixed; /* 防止背景滚动偏移 */
+		}
+
+		/* 选项卡：半透明白底，透出背景图且不遮挡内容 */
+		.start-card,
+		.tips-card {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100vh;
+			background: rgba(253, 255, 255, 0.75);
+			z-index: 10;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			transition: opacity 0.5s;
+		}
+
+		.tips-card {
+			display: none;
+		}
+
+		/* 选项卡标题：浅蓝色系 */
+		.start-card h2,
+		.tips-card h2 {
+			font-size: 2.5em;
+			color: #4a90e2;
+			margin-bottom: 40px;
+			text-align: center;
+			padding: 0 20px;
+			text-shadow: 0 2px 4px rgba(74, 144, 226, 0.3);
+		}
+
+		/* 视频区域标题：粉色系 */
+		.banner .content h1 {
+			font-size: 2.5em;
+			color: #e6399b;
+			margin-bottom: 40px;
+			text-align: center;
+			padding: 0 20px;
+			text-shadow: 0 2px 4px rgba(230, 57, 155, 0.2);
+		}
+
+		.btn-group {
+			display: flex;
+			gap: 20px;
+		}
+
+		/* 按钮：浅蓝色系 */
+		.start-card button,
+		.tips-card button {
+			padding: 12px 36px;
+			font-size: 1.2em;
+			border: none;
+			border-radius: 50px;
+			cursor: pointer;
+			transition: all 0.3s;
+			font-weight: 500;
+			opacity: 0.9;
+		}
+
+		#goodBtn, #receiveBtn {
+			background: #4a90e2;
+			color: white;
+		}
+
+		#badBtn {
+			background: #e3f2fd;
+			color: #4a90e2;
+		}
+
+		#goodBtn:hover, #receiveBtn:hover {
+			background: #357abd;
+			transform: scale(1.05);
+			opacity: 1;
+		}
+
+		#badBtn:hover {
+			background: #bbdefb;
+			transform: scale(1.05);
+			opacity: 1;
+		}
+
+		/* 视频区域：默认隐藏，叠加在背景图上 */
+		.banner {
+			width: 100%;
+			height: 100vh;
+			overflow: hidden;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			display: none;
+			position: relative;
+		}
+
+		.banner video {
+			position: absolute;
+			top: 0;
+			left: 0;
+			object-fit: cover;
+			width: 100%;
+			height: 100%;
+			pointer-events: none;
+			opacity: 0.9; /* 视频轻微透明，可透出背景图（可选） */
+		}
+
+		.banner .content {
+			position: relative;
+			z-index: 1;
+			max-width: 1000px;
+			margin: 0 auto;
+			text-align: center;
+		}
+
+		.banner .content h1 {
+			margin: 0;
+			padding: 0;
+			font-size: 3.5em;
+			text-transform: uppercase;
+			position: relative;
+		}
+
+		/* 渐变文字动画 */
+		h1::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			color: transparent;
+			background-image: linear-gradient(to right,
+					#e6399b, #c23616, #192a56, #00d2d3,
+					#f8bbd0, #6d214f, #e6399b, #e84118);
+			background-clip: text;
+			-webkit-background-clip: text;
+			clip-path: circle(100px at 0% 50%);
+			animation: move 5s infinite;
+		}
+
+		@keyframes move {
+			0% { clip-path: circle(100px at 0% 50%); }
+			50% { clip-path: circle(100px at 100% 50%); }
+			100% { clip-path: circle(100px at 0% 50%); }
+		}
+	</style>
+ </head>
+ <body>
+  <!-- 初始选项卡 -->
+  <div class="start-card">
+   <h2>万事胜意-未来可期</h2>
+   <div class="btn-group">
+	<button id="goodBtn">好</button>
+	<button id="badBtn">不好</button>
+   </div>
+  </div>
+
+  <!-- “不好”提示卡 -->
+  <div class="tips-card">
+   <h2>不好也得好，嘻嘻</h2>
+   <button id="receiveBtn">好叭好叭</button>
+  </div>
+
+  <!-- 视频区域 -->
+  <div class="banner">
+   <video autoplay muted loop>
+	<source src="水晶玫瑰花.mp4" type="video/mp4"> Your browser does not support the video tag.
+   </video>
+   <div class="content">
+	<h1></h1> <!-- 补充标题文字，避免空白 -->
+   </div>
+  </div>
+
+  <!-- 音频区域（同文件夹音频） -->
+  <audio id="music1" loop preload="auto" controls hidden>
+   <source src="music.mp3" type="audio/mpeg"> <!-- 音频也需在同文件夹 -->
+	Your browser does not support the audio element.
+  </audio>
+
+  <script>
+		// 点击“好”：显示视频
+		document.getElementById('goodBtn').addEventListener('click', () => hideCardAndShowVideo('.start-card'));
+
+		// 点击“不好”：显示提示卡
+		document.getElementById('badBtn').addEventListener('click', () => {
+			document.querySelector('.start-card').style.opacity = 0;
+			setTimeout(() => {
+				document.querySelector('.start-card').style.display = 'none';
+				document.querySelector('.tips-card').style.display = 'flex';
+			}, 500);
+		});
+
+		// 点击“好叭好叭”：显示视频
+		document.getElementById('receiveBtn').addEventListener('click', () => hideCardAndShowVideo('.tips-card'));
+
+		// 通用：隐藏卡片+显示视频
+		function hideCardAndShowVideo(cardSelector) {
+			document.querySelector(cardSelector).style.opacity = 0;
+			setTimeout(() => {
+				document.querySelector(cardSelector).style.display = 'none';
+				document.querySelector('.banner').style.display = 'flex';
+			}, 500);
+		}
+
+		// 点击页面播放音乐（排除按钮）
+		document.body.addEventListener('click', (e) => {
+			if (!['goodBtn', 'badBtn', 'receiveBtn'].includes(e.target.id)) {
+				document.getElementById('music1').play().catch(err => console.log('音乐需用户交互：', err));
+			}
+		});
+	</script>
+ </body>
+</html>
